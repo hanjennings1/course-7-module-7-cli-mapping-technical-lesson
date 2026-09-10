@@ -28,6 +28,33 @@ def complete_task(args):
     else:
         print("❌ Task not found.")
 
+# Function to handle listing out the tasks and if completed
+def list_tasks(args):
+    user = users.get(args.user)
+    if not user:
+        print("❌ User not found.")
+        return
+    if not user.task:
+        print(f"No tasks for {user.name}.")
+        return
+    for task in user.tasks:
+        status = "✅" if task.completed else "⬜"
+        print(f"{status} {task.title}")
+
+# Function to handle deleting task(s)
+def delete_task(args):
+    user = users.get(args.user)
+    if not user:
+        print("❌ User not found.")
+        return
+    task = user.get_task_by_title(args.title)
+    if task:
+        user.tasks.remove(task)
+        print(f"🗑️ Task '{task.title}' deleted.")
+    else:
+        print(f"❌ Task not found.")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Task Manager CLI")
     subparsers = parser.add_subparsers()
@@ -43,6 +70,17 @@ def main():
     complete_parser.add_argument("user")
     complete_parser.add_argument("title")
     complete_parser.set_defaults(func=complete_task)
+
+    # Suparser for list-tasks
+    list_parser = subparsers.add_parser("list-tasks", help="List all tasks for a user")
+    list_parser.add_argument("user")
+    list_parser.set_defaults(func=list_tasks)
+
+    # Subparser for delete-task
+    delete_parser = subparsers.add_parser("delete-task", help="Delete a task from a user")
+    delete_parser.add_argument("user")
+    delete_parser.add_argument("title")
+    delete_parser.set_defaults(func=delete_task)
 
     args = parser.parse_args()
     if hasattr(args, "func"):
