@@ -12,7 +12,7 @@ class Task:
         # Set completed to True
         self.completed  = True
         # Print confirmation message
-        print(f"✅ Task '{title}' completed.")
+        print(f"✅ Task '{self.title}' completed.")
 
 
 # Define a User class
